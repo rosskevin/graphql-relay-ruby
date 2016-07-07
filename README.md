@@ -43,8 +43,10 @@ NodeIdentification = GraphQL::Relay::GlobalNodeIdentification.define do
   # return the corresponding application object
   object_from_id -> (id, ctx) do
     type_name, id = NodeIdentification.from_global_id(id)
+    # Get the resolved_class_name for the given type_name
+    class_name = ctx.schema.resolved_class_names[type_name]
     # "Post" -> Post.find(id)
-    Object.const_get(type_name).find(id)
+    class_name.constantize.find(id)
   end
 
   # Given an application object,
